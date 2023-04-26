@@ -21,7 +21,7 @@ public class TestServlet extends HttpServlet {
 
 	private final static String url = "jdbc:mysql://localhost:3306/myfirstwebapp"; // table details
 	private final static String username = "eiu";
-	private final static String password = "4eiu";
+	private final static String password = "4#Eiumysql";
 
 	private static final long serialVersionUID = 1L;
 
@@ -64,10 +64,16 @@ public class TestServlet extends HttpServlet {
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//e.printStackTrace();
+			resp.setContentType("text/html");
+			PrintWriter writer = resp.getWriter();
+			writer.println(e);
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//e.printStackTrace();
+			resp.setContentType("text/html");
+			PrintWriter writer = resp.getWriter();
+			writer.println(e);
 		}
 
 	}

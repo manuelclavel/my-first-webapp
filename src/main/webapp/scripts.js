@@ -12,7 +12,7 @@ enterButton.addEventListener("click", function() {
 enterButton.addEventListener("click", function() {
 
 	const xhr = new XMLHttpRequest();
-	xhr.open("POST", "http://localhost:8080/my-first-webapp/test");
+	xhr.open("POST", "http://" + window.location.host + "/my-first-webapp-1.0-SNAPSHOT/test");
 	xhr.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
 	const body = JSON.stringify({
 		"login": document.getElementById("login_input").value

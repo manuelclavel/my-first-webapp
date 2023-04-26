@@ -2,7 +2,7 @@ CREATE DATABASE myfirstwebapp
 	DEFAULT CHARACTER SET utf8
 	DEFAULT COLLATE utf8_general_ci;
 	
-CREATE USER 'eiu'@'localhost' IDENTIFIED BY '4eiu';
+CREATE USER 'eiu'@'localhost' IDENTIFIED BY '4#Eiumysql';
 GRANT ALL ON myfirstwebapp.* TO 'eiu'@'localhost';
 
 	
