@@ -64,16 +64,12 @@ public class TestServlet extends HttpServlet {
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			//e.printStackTrace();
-			resp.setContentType("text/html");
-			PrintWriter writer = resp.getWriter();
-			writer.println(e);
+			e.printStackTrace();
+		
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
-			//e.printStackTrace();
-			resp.setContentType("text/html");
-			PrintWriter writer = resp.getWriter();
-			writer.println(e);
+			e.printStackTrace();
+			
 		}
 
 	}
