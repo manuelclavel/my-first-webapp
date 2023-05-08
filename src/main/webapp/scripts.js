@@ -11,20 +11,32 @@ enterButton.addEventListener("click", function() {
 
 enterButton.addEventListener("click", function() {
 	const xhr = new XMLHttpRequest();
+	
+	xhr.onreadystatechange = () => {
+    if (xhr.readyState === 4) {
+    	if (xhr.status == 200){
+    		window.location = 'http://localhost:8080/my-first-webapp/'
+    	} else {
+    		alert(xhr.responseText);
+    	}
+    }
+  }
+	
+	
 	xhr.open("POST", "http://" + window.location.host + "/my-first-webapp/test");
 	xhr.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
 	const body = JSON.stringify({
 		"login": document.getElementById("login_input").value
 	});
 	
-	/*xhr.onload = () => {
+	xhr.onload = () => {
 		if (xhr.readyState == 4 && xhr.status == 200) {
-		console.log("VAMOS")
+		
 		} else {
 			console.log(`Error: ${xhr.status}`);
 		}
 	};
-	*/
+	
 	
 	xhr.send(body);
 	}

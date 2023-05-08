@@ -15,9 +15,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import java.net.*;
-
 import org.json.JSONObject;
+
 
 @WebServlet(name = "testServlet", urlPatterns = { "/test" }, loadOnStartup = 1)
 public class TestServlet extends HttpServlet {
@@ -27,8 +26,6 @@ public class TestServlet extends HttpServlet {
 	private final static String password = "4#Eiumysql";
 
 	private static final long serialVersionUID = 1L;
-	
-	
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -43,60 +40,56 @@ public class TestServlet extends HttpServlet {
 
 		resp.setContentType("text/html");
 		StringBuilder report = new StringBuilder();
+
+		/*
+		Cookie ck[] = req.getCookies();
+		if (ck != null && ck[0].getName().equals("login")) {
+			    report.append("Welcome back ".concat(ck[0].getValue()));
+				PrintWriter writer = resp.getWriter();
+				writer.println(report);
 		
-		
-		
-	    Cookie ck[]=req.getCookies(); 
-	    if (ck[0].getName().equals("login")) {
-	    	report.append("Welcome back ".concat(ck[0].getValue()));
-	    	
-	    } else {
-	    	String query = "SELECT COUNT(login) = 1 as result FROM account WHERE login =?";
+
+		} else {
+		*/	
+			String query = "SELECT COUNT(login) = 1 as result FROM account WHERE login =?";
 			Connection con;
 			try {
 				Class.forName("com.mysql.cj.jdbc.Driver");
 				con = DriverManager.getConnection(url, username, password);
 				PreparedStatement st = con.prepareStatement(query);
+				JSONObject obj = new JSONObject(req.getReader().readLine());
 				st.setString(1, obj.getString("login"));
 				ResultSet rs = st.executeQuery();
-				
+
 				if (rs.next()) {
 					if (rs.getInt("result") == 1) {
 						report.append("The account exists");
-						Cookie ck=new Cookie("login",obj.getString("login"));//creating cookie object 
-						resp.addCookie(ck);//adding cookie in the response  
-						
+						resp.setStatus(200);
+						Cookie newck = new Cookie("login", obj.getString("login"));// creating cookie object
+						resp.addCookie(newck);// adding cookie in the response
+
 					} else {
+						resp.setStatus(403);
 						report.append("The account does not exist");
 					}
 				}
-			
-	    }
-	     
-		
-		 
-		
-		
 
-		
-		
-			st.close();
-			con.close();
+				st.close();
+				con.close();
 
-		
-			PrintWriter writer = resp.getWriter();
-			writer.println(report);
+				PrintWriter writer = resp.getWriter();
+				writer.println(report);
 
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+
+			}
+
 		}
-
-	}
-
+	//}
 }

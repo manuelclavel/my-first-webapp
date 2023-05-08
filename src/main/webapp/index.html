@@ -2,12 +2,27 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Account Manager</title>
+<title>Home Page</title>
 </head>
 <body>
-<label for="login_input">Login: </label>
-<input id="login_input">
-<button id="enter_button">Enter</button>
+<h1>Welcome to My First WebApp with Cookies!</h1>
 </body>
-<script src="scripts.js"></script>
+ 
+<script>
+var xhr = new XMLHttpRequest();
+
+xhr.onreadystatechange = () => {
+    if (xhr.readyState === 4) {
+    	if (xhr.status == 302){
+    		window.location = 'http://localhost:8080/my-first-webapp/login.html'
+    	} else {
+    		alert(xhr.responseText);
+    	}
+    }
+  }
+  
+xhr.open('GET', 'http://localhost:8080/my-first-webapp/cookie', true);
+xhr.send(null);
+</script>
+
 </html>
