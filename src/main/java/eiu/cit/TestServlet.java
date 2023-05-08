@@ -10,9 +10,12 @@ import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import java.net.*;
 
 import org.json.JSONObject;
 
@@ -24,6 +27,8 @@ public class TestServlet extends HttpServlet {
 	private final static String password = "4#Eiumysql";
 
 	private static final long serialVersionUID = 1L;
+	
+	
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -36,29 +41,49 @@ public class TestServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-		JSONObject obj = new JSONObject(req.getReader().readLine());
-
-		String query = "SELECT COUNT(login) = 1 as result FROM account WHERE login =?";
-		Connection con;
+		resp.setContentType("text/html");
+		StringBuilder report = new StringBuilder();
 		
-		try {
-			Class.forName("com.mysql.cj.jdbc.Driver");
-			con = DriverManager.getConnection(url, username, password);
-			PreparedStatement st = con.prepareStatement(query);
-			st.setString(1, obj.getString("login"));
-			ResultSet rs = st.executeQuery();
-			StringBuilder report = new StringBuilder();
-			if (rs.next()) {
-				if (rs.getInt("result") == 1) {
-					report.append("The account exists");
-				} else {
-					report.append("The account does not exist");
+		
+		
+	    Cookie ck[]=req.getCookies(); 
+	    if (ck[0].getName().equals("login")) {
+	    	report.append("Welcome back ".concat(ck[0].getValue()));
+	    	
+	    } else {
+	    	String query = "SELECT COUNT(login) = 1 as result FROM account WHERE login =?";
+			Connection con;
+			try {
+				Class.forName("com.mysql.cj.jdbc.Driver");
+				con = DriverManager.getConnection(url, username, password);
+				PreparedStatement st = con.prepareStatement(query);
+				st.setString(1, obj.getString("login"));
+				ResultSet rs = st.executeQuery();
+				
+				if (rs.next()) {
+					if (rs.getInt("result") == 1) {
+						report.append("The account exists");
+						Cookie ck=new Cookie("login",obj.getString("login"));//creating cookie object 
+						resp.addCookie(ck);//adding cookie in the response  
+						
+					} else {
+						report.append("The account does not exist");
+					}
 				}
-			}
+			
+	    }
+	     
+		
+		 
+		
+		
+
+		
+		
 			st.close();
 			con.close();
 
-			resp.setContentType("text/html");
+		
 			PrintWriter writer = resp.getWriter();
 			writer.println(report);
 
