@@ -14,14 +14,14 @@ var xhr = new XMLHttpRequest();
 xhr.onreadystatechange = () => {
     if (xhr.readyState === 4) {
     	if (xhr.status == 302){
-    		window.location = 'http://localhost:8080/my-first-webapp/login.html'
+    		window.location = 'http://' + window.location.host +  '/my-first-webapp/login.html' 
     	} else {
     		alert(xhr.responseText);
     	}
     }
   }
   
-xhr.open('GET', 'http://localhost:8080/my-first-webapp/cookie', true);
+xhr.open('GET', 'http://' + window.location.host + '/my-first-webapp/cookie', true);
 xhr.send(null);
 </script>
 
