@@ -2,27 +2,24 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<script src="scripts.js"></script>
 <title>Home Page</title>
 </head>
 <body>
 <h1>Welcome to My First WebApp with Cookies!</h1>
+
+<table id="courses_table">
+  <thead>
+    <tr>
+      <!--   <th>Course</th> -->
+    </tr>
+  </thead>
+  <tbody>
+  </tbody>
+</table>
+
 </body>
- 
 <script>
-var xhr = new XMLHttpRequest();
-
-xhr.onreadystatechange = () => {
-    if (xhr.readyState === 4) {
-    	if (xhr.status == 302){
-    		window.location = 'http://' + window.location.host +  '/my-first-webapp/login.html' 
-    	} else {
-    		alert(xhr.responseText);
-    	}
-    }
-  }
-  
-xhr.open('GET', 'http://' + window.location.host + '/my-first-webapp/cookie', true);
-xhr.send(null);
+displayCourses();
 </script>
-
 </html>
