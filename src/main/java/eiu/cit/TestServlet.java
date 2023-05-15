@@ -23,7 +23,7 @@ public class TestServlet extends HttpServlet {
 
 	private final static String url = "jdbc:mysql://localhost:3306/myfirstwebapp"; // table details
 	private final static String username = "eiu";
-	private final static String password = "4#Eiumysql";
+	private final static String password = "4#Eiumysql#4";
 
 	private static final long serialVersionUID = 1L;
 

@@ -48,7 +48,7 @@ enterButton.addEventListener("click", function() {
 	xhr.onreadystatechange = () => {
 		if (xhr.readyState === 4) {
 			if (xhr.status == 200) {
-				window.location = 'http://localhost:8080/my-first-webapp/'
+				window.location = 'http://' + window.location.host + '/my-first-webapp/'
 			} else {
 				alert(xhr.responseText);
 			}
