@@ -15,3 +15,13 @@ CREATE TABLE account (
 ) ENGINE=InnoDB;
 
 insert into account (login) values ("manuelgclavel@gmail.com");
+
+DROP TABLE IF EXISTS course;	
+CREATE TABLE course (
+  course_id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  code varchar(50),
+  name varchar(250)
+) ENGINE=InnoDB;
+
+insert into course (code, name) values ("CSE470", "Cloud Computing");
+insert into course (code, name) values ("CSE480", "Web Programming");
