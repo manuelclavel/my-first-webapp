@@ -5,7 +5,7 @@ function displayCourses() {
 	xhr.onreadystatechange = () => {
 		if (xhr.readyState === 4) {
 			if (xhr.status == 302) {
-				window.location = 'http://' + window.location.host + '/my-first-webapp/login.html'
+				window.location = 'http://' + window.location.host + '/my-first-webapp-1.0-SNAPSHOT/login.html'
 			} else if (xhr.status == 200) {
 				var theaderRef = document.getElementById('courses_table').getElementsByTagName('thead')[0];
 				// Insert a row at the end of the header
@@ -39,7 +39,7 @@ function displayCourses() {
 		}
 	}
 
-	xhr.open('GET', 'http://' + window.location.host + '/my-first-webapp/courses', true);
+	xhr.open('GET', 'http://' + window.location.host + '/my-first-webapp-1.0-SNAPSHOT/courses', true);
 	xhr.send(null);
 }
 

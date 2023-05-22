@@ -7,7 +7,7 @@ function checkCookie() {
 	xhr.onreadystatechange = () => {
 		if (xhr.readyState === 4) {
 			if (xhr.status == 302) {
-				window.location = 'http://' + window.location.host + '/my-first-webapp/login.html'
+				window.location = 'http://' + window.location.host + '/my-first-webapp-1.0-SNAPSHOT/login.html'
 				//alert(xhr.responseText);
 			} else {
 				alert(xhr.responseText);
@@ -17,6 +17,6 @@ function checkCookie() {
 			}
 		}
 	}
-	xhr.open('GET', 'http://' + window.location.host + '/my-first-webapp/cookie', true);
+	xhr.open('GET', 'http://' + window.location.host + '/my-first-webapp-1.0-SNAPSHOT/cookie', true);
 	xhr.send(null);
 }

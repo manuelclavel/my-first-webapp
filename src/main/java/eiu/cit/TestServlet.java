@@ -2,12 +2,18 @@ package eiu.cit;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.security.Key;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Base64;
+import java.util.Date;
+import java.util.UUID;
 
+import javax.crypto.spec.SecretKeySpec;
+import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.Cookie;
@@ -15,8 +21,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
+
+import javax.xml.bind.DatatypeConverter;
 
 @WebServlet(name = "testServlet", urlPatterns = { "/test" }, loadOnStartup = 1)
 public class TestServlet extends HttpServlet {
@@ -65,7 +77,11 @@ public class TestServlet extends HttpServlet {
 					if (rs.getInt("result") == 1) {
 						report.append("The account exists");
 						resp.setStatus(200);
-						Cookie newck = new Cookie("login", obj.getString("login"));// creating cookie object
+						/* token */
+						String authToken = issueToken(obj.getString("login"));
+						Cookie newck = new Cookie("login",authToken);// creating cookie with token				
+						//Cookie newck = new Cookie("login", obj.getString("login"));// creating cookie object
+						
 						resp.addCookie(newck);// adding cookie in the response
 
 					} else {
@@ -88,8 +104,40 @@ public class TestServlet extends HttpServlet {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NamingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 
 		}
-	//}
+	// }
+
+	private String issueToken(String login) throws NamingException {
+		
+		//The JWT signature algorithm we will be using to sign the token
+	    SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
+	    Key key= getKey();
+	    System.out.println(key);
+
+		String authToken = Jwts.builder()
+		        .claim("login", login)
+		        .setSubject("eiu")
+		        .setId(UUID.randomUUID().toString())
+		        .signWith(signatureAlgorithm, key)
+		        .compact();
+		
+		//String authToken = 
+		//		Jwts.builder().claim("login", login)
+		//		.signWith(SignatureAlgorithm.HS256, key).compact();
+		// Return the token on the response
+		return authToken;
+
+	}
+	public static Key getKey() {
+	      
+		  return Keys.secretKeyFor(SignatureAlgorithm.HS256);
+		}
 }
