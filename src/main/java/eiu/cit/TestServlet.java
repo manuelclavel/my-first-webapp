@@ -3,6 +3,7 @@ package eiu.cit;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.security.Key;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -52,92 +53,56 @@ public class TestServlet extends HttpServlet {
 
 		resp.setContentType("text/html");
 		StringBuilder report = new StringBuilder();
+		String query = "SELECT COUNT(login) = 1 as result FROM account WHERE login =?";
+		Connection con;
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			con = DriverManager.getConnection(url, username, password);
+			PreparedStatement st = con.prepareStatement(query);
+			JSONObject obj = new JSONObject(req.getReader().readLine());
+			st.setString(1, obj.getString("login"));
+			ResultSet rs = st.executeQuery();
 
-		/*
-		Cookie ck[] = req.getCookies();
-		if (ck != null && ck[0].getName().equals("login")) {
-			    report.append("Welcome back ".concat(ck[0].getValue()));
-				PrintWriter writer = resp.getWriter();
-				writer.println(report);
-		
+			if (rs.next()) {
+				if (rs.getInt("result") == 1) {
+					report.append("The account exists");
+					resp.setStatus(200);
+					/* token */
+					String authToken = Configuration.issueToken(obj.getString("login"));
+					Cookie newck = new Cookie("login", authToken);// creating cookie with token
+					// Cookie newck = new Cookie("login", obj.getString("login"));// creating cookie
+					// object
 
-		} else {
-		*/	
-			String query = "SELECT COUNT(login) = 1 as result FROM account WHERE login =?";
-			Connection con;
-			try {
-				Class.forName("com.mysql.cj.jdbc.Driver");
-				con = DriverManager.getConnection(url, username, password);
-				PreparedStatement st = con.prepareStatement(query);
-				JSONObject obj = new JSONObject(req.getReader().readLine());
-				st.setString(1, obj.getString("login"));
-				ResultSet rs = st.executeQuery();
+					resp.addCookie(newck);// adding cookie in the response
 
-				if (rs.next()) {
-					if (rs.getInt("result") == 1) {
-						report.append("The account exists");
-						resp.setStatus(200);
-						/* token */
-						String authToken = issueToken(obj.getString("login"));
-						Cookie newck = new Cookie("login",authToken);// creating cookie with token				
-						//Cookie newck = new Cookie("login", obj.getString("login"));// creating cookie object
-						
-						resp.addCookie(newck);// adding cookie in the response
-
-					} else {
-						resp.setStatus(403);
-						report.append("The account does not exist");
-					}
+				} else {
+					resp.setStatus(403);
+					report.append("The account does not exist");
 				}
-
-				st.close();
-				con.close();
-
-				PrintWriter writer = resp.getWriter();
-				writer.println(report);
-
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-
-			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (NamingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
 
+			st.close();
+			con.close();
+
+			PrintWriter writer = resp.getWriter();
+			writer.println(report);
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-	// }
-
-	private String issueToken(String login) throws NamingException {
-		
-		//The JWT signature algorithm we will be using to sign the token
-	    SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
-	    Key key= getKey();
-	    System.out.println(key);
-
-		String authToken = Jwts.builder()
-		        .claim("login", login)
-		        .setSubject("eiu")
-		        .setId(UUID.randomUUID().toString())
-		        .signWith(signatureAlgorithm, key)
-		        .compact();
-		
-		//String authToken = 
-		//		Jwts.builder().claim("login", login)
-		//		.signWith(SignatureAlgorithm.HS256, key).compact();
-		// Return the token on the response
-		return authToken;
 
 	}
-	public static Key getKey() {
-	      
-		  return Keys.secretKeyFor(SignatureAlgorithm.HS256);
-		}
+
 }

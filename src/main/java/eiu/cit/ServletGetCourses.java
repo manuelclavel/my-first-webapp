@@ -2,6 +2,7 @@ package eiu.cit;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -18,13 +19,15 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import io.jsonwebtoken.Claims;
+
 @WebServlet(name = "getCourses", urlPatterns = { "/courses" }, loadOnStartup = 1)
 public class ServletGetCourses extends HttpServlet {
 
 	private final static String url = "jdbc:mysql://localhost:3306/myfirstwebapp"; // table details
 	private final static String username = "eiu";
 	private final static String password = "4#Eiumysql#4";
-	
+
 	private static final long serialVersionUID = 1L;
 
 	@Override
@@ -33,6 +36,14 @@ public class ServletGetCourses extends HttpServlet {
 
 		Cookie ck[] = req.getCookies();
 		if (ck != null && ck[0].getName().equals("login")) {
+
+			Claims claims = null;
+			try {
+				claims = Configuration.decodeJWT(ck[0].getValue());
+			} catch (NoSuchAlgorithmException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 
 			String query = "SELECT code, name FROM course";
 			Connection con;
@@ -43,11 +54,13 @@ public class ServletGetCourses extends HttpServlet {
 				ResultSet rs = st.executeQuery();
 
 				JSONArray objArray = new JSONArray();
-				while (rs.next()) {
-					JSONObject obj = new JSONObject();
-					obj.put("code", rs.getString("code"));
-					obj.put("name", rs.getString("name"));
-					objArray.put(obj);
+				if (claims.get("role").equals("teacher")) {
+					while (rs.next()) {
+						JSONObject obj = new JSONObject();
+						obj.put("code", rs.getString("code"));
+						obj.put("name", rs.getString("name"));
+						objArray.put(obj);
+					}
 				}
 				st.close();
 				con.close();
