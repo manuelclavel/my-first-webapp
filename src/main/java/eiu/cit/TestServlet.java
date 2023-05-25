@@ -53,7 +53,7 @@ public class TestServlet extends HttpServlet {
 
 		resp.setContentType("text/html");
 		StringBuilder report = new StringBuilder();
-		String query = "SELECT COUNT(login) = 1 as result FROM account WHERE login =?";
+		String query = "SELECT login, role FROM account WHERE login =?";
 		Connection con;
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
@@ -64,11 +64,10 @@ public class TestServlet extends HttpServlet {
 			ResultSet rs = st.executeQuery();
 
 			if (rs.next()) {
-				if (rs.getInt("result") == 1) {
-					report.append("The account exists");
+				 	report.append("The account exists");
 					resp.setStatus(200);
 					/* token */
-					String authToken = Configuration.issueToken(obj.getString("login"));
+					String authToken = Configuration.issueToken(rs.getString("login"), rs.getString("role"));
 					Cookie newck = new Cookie("login", authToken);// creating cookie with token
 					// Cookie newck = new Cookie("login", obj.getString("login"));// creating cookie
 					// object
@@ -79,7 +78,7 @@ public class TestServlet extends HttpServlet {
 					resp.setStatus(403);
 					report.append("The account does not exist");
 				}
-			}
+			
 
 			st.close();
 			con.close();

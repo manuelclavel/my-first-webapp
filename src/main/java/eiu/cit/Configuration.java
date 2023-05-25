@@ -32,7 +32,7 @@ public class Configuration {
 
 	private Configuration()  {}
 
-	public static String issueToken(String login) throws NoSuchAlgorithmException {
+	public static String issueToken(String login, String role) throws NoSuchAlgorithmException {
 		
 		long nowMillis = System.currentTimeMillis();
 		Date now = new Date(nowMillis);
@@ -40,7 +40,7 @@ public class Configuration {
 		// We will sign our JWT with our ApiKey secret
 		byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(SECRET_KEY);
 		
-		JwtBuilder builder = Jwts.builder().claim("login", login).claim("role", "teacher")
+		JwtBuilder builder = Jwts.builder().claim("login", login).claim("role", role)
 				.signWith(Keys.hmacShaKeyFor(apiKeySecretBytes));
 
 		// if it has been specified, let's add the expiration
