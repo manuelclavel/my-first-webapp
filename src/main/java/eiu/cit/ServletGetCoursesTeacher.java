@@ -40,44 +40,48 @@ public class ServletGetCoursesTeacher extends HttpServlet {
 			Claims claims = null;
 			try {
 				claims = Configuration.decodeJWT(ck[0].getValue());
+				if (claims.get("role").equals("teacher")){
+					String query = "SELECT code, name FROM course";
+					Connection con;
+					try {
+						Class.forName("com.mysql.cj.jdbc.Driver");
+						con = DriverManager.getConnection(url, username, password);
+						PreparedStatement st = con.prepareStatement(query);
+						ResultSet rs = st.executeQuery();
+
+						JSONArray objArray = new JSONArray();
+						while (rs.next()) {
+								JSONObject obj = new JSONObject();
+								obj.put("code", rs.getString("code"));
+								obj.put("name", rs.getString("name"));
+								objArray.put(obj);
+							}
+						
+						st.close();
+						con.close();
+
+						PrintWriter writer = resp.getWriter();
+						writer.println(objArray);
+
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+
+					} catch (ClassNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+
+					}
+				} else {
+						resp.setStatus(302);
+				}
+				
 			} catch (NoSuchAlgorithmException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 
-			String query = "SELECT code, name FROM course";
-			Connection con;
-			try {
-				Class.forName("com.mysql.cj.jdbc.Driver");
-				con = DriverManager.getConnection(url, username, password);
-				PreparedStatement st = con.prepareStatement(query);
-				ResultSet rs = st.executeQuery();
-
-				JSONArray objArray = new JSONArray();
-				if (claims.get("role").equals("teacher")) {
-					while (rs.next()) {
-						JSONObject obj = new JSONObject();
-						obj.put("code", rs.getString("code"));
-						obj.put("name", rs.getString("name"));
-						objArray.put(obj);
-					}
-				}
-				st.close();
-				con.close();
-
-				PrintWriter writer = resp.getWriter();
-				writer.println(objArray);
-
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-
-			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-
-			}
-
+			
 		} else {
 			resp.setStatus(302);
 		}
