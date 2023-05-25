@@ -26,14 +26,7 @@ enterButton.addEventListener("click", function() {
 		"login": document.getElementById("login_input").value
 	});
 
-	xhr.onload = () => {
-		if (xhr.readyState == 4 && xhr.status == 200) {
-
-		} else {
-			console.log(`Error: ${xhr.status}`);
-		}
-	};
-
+	
 
 	xhr.send(body);
 }

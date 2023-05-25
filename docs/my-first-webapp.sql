@@ -11,10 +11,12 @@ use myfirstwebapp
 DROP TABLE IF EXISTS account;	
 CREATE TABLE account (
   account_id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  login varchar(50)
+  login varchar(50),
+  role varchar(50)
 ) ENGINE=InnoDB;
 
-insert into account (login) values ("manuelgclavel@gmail.com");
+insert into account (login, role) values ("manuelgclavel@gmail.com", "teacher");
+insert into account (login, role) values ("manuel.clavel@eiu.edu.vn", "student");
 
 DROP TABLE IF EXISTS course;	
 CREATE TABLE course (

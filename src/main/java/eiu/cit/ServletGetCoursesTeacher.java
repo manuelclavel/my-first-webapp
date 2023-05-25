@@ -21,8 +21,8 @@ import org.json.JSONObject;
 
 import io.jsonwebtoken.Claims;
 
-@WebServlet(name = "getCourses", urlPatterns = { "/courses" }, loadOnStartup = 1)
-public class ServletGetCourses extends HttpServlet {
+@WebServlet(name = "getCoursesTeacher", urlPatterns = { "/courses_teacher" }, loadOnStartup = 1)
+public class ServletGetCoursesTeacher extends HttpServlet {
 
 	private final static String url = "jdbc:mysql://localhost:3306/myfirstwebapp"; // table details
 	private final static String username = "eiu";
