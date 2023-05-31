@@ -27,3 +27,34 @@ CREATE TABLE course (
 
 insert into course (code, name) values ("CSE470", "Cloud Computing");
 insert into course (code, name) values ("CSE480", "Web Programming");
+
+DROP TABLE IF EXISTS enrolment;	
+CREATE TABLE enrolment (
+  enrolment_id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  course int,
+  account int,
+  FOREIGN KEY fk_enrolment_course(course)
+  REFERENCES course(course_id),
+  FOREIGN KEY fk_enrolment_account(account)
+  REFERENCES account(account_id)
+) ENGINE=InnoDB;
+
+insert into enrolment (course, account) values (1, 2);
+
+DROP TABLE IF EXISTS teaching;	
+CREATE TABLE teaching (
+  teaching_id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  course int,
+  account int,
+  FOREIGN KEY fk_teaching_course(course)
+  REFERENCES course(course_id),
+  FOREIGN KEY fk_teaching_account(account)
+  REFERENCES account(account_id)
+) ENGINE=InnoDB;
+
+insert into teaching (course, account) values (2, 1);
+
+
+
+
+

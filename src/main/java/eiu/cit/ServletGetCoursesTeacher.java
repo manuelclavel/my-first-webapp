@@ -41,12 +41,16 @@ public class ServletGetCoursesTeacher extends HttpServlet {
 			try {
 				claims = Configuration.decodeJWT(ck[0].getValue());
 				if (claims.get("role").equals("teacher")){
-					String query = "SELECT code, name FROM course";
+					String query = "SELECT code, name FROM teaching "
+							+ "LEFT JOIN course on course_id = teaching.course "
+							+ "LEFT JOIN account on account_id = teaching.account "
+							+ "WHERE login= ?";
 					Connection con;
 					try {
 						Class.forName("com.mysql.cj.jdbc.Driver");
 						con = DriverManager.getConnection(url, username, password);
 						PreparedStatement st = con.prepareStatement(query);
+						st.setString(1, (String) claims.get("login"));
 						ResultSet rs = st.executeQuery();
 
 						JSONArray objArray = new JSONArray();
@@ -65,7 +69,9 @@ public class ServletGetCoursesTeacher extends HttpServlet {
 
 					} catch (SQLException e) {
 						// TODO Auto-generated catch block
-						e.printStackTrace();
+						//e.printStackTrace();
+						PrintWriter writer = resp.getWriter();
+						writer.println(e.toString());
 
 					} catch (ClassNotFoundException e) {
 						// TODO Auto-generated catch block

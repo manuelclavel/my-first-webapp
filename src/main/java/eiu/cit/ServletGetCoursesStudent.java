@@ -40,19 +40,23 @@ private final static String url = "jdbc:mysql://localhost:3306/myfirstwebapp"; /
 				try {
 					claims = Configuration.decodeJWT(ck[0].getValue());
 					if (claims.get("role").equals("student")){
-						String query = "SELECT code, name FROM course";
+						String query = "SELECT code, name FROM enrolment "
+								+ "LEFT JOIN course on course_id = enrolment.course "
+								+ "LEFT JOIN account on account_id = enrolment.account "
+								+ "WHERE login= ?";
 						Connection con;
 						try {
 							Class.forName("com.mysql.cj.jdbc.Driver");
 							con = DriverManager.getConnection(url, username, password);
 							PreparedStatement st = con.prepareStatement(query);
+							st.setString(1, (String) claims.get("login"));
 							ResultSet rs = st.executeQuery();
 
 							JSONArray objArray = new JSONArray();
 							while (rs.next()) {
 									JSONObject obj = new JSONObject();
 									obj.put("code", rs.getString("code"));
-									obj.put("name", "");
+									obj.put("name", rs.getString("name"));
 									objArray.put(obj);
 								}
 							
@@ -64,7 +68,10 @@ private final static String url = "jdbc:mysql://localhost:3306/myfirstwebapp"; /
 
 						} catch (SQLException e) {
 							// TODO Auto-generated catch block
-							e.printStackTrace();
+							//e.printStackTrace();
+							PrintWriter writer = resp.getWriter();
+							writer.println(e.toString());
+
 
 						} catch (ClassNotFoundException e) {
 							// TODO Auto-generated catch block
